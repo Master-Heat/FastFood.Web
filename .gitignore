@@ -10,3 +10,7 @@ FastFood.Web/obj/".vs/"
 "FastFood.Models/bin/" 
 "FastFood.Reposiory/bin/" 
 "FastFood.Web/bin/" 
+FastFood.Models/bin/
+FastFood.Reposiory/bin/
+FastFood.Web/bin/
+FastFood.Web/obj/
