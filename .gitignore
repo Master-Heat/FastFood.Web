@@ -1,5 +1,5 @@
-"FastFood.Models/bin/"  
-"FastFood.Reposiory/bin/"  
-"FastFood.Services/bin/"  
-"FastFood.Web/bin/"  
-"FastFood.Web/obj/Debug/" 
+.vs/
+FastFood.Models/obj/
+FastFood.Reposiory/obj/
+FastFood.Services/obj/
+FastFood.Web/obj/
