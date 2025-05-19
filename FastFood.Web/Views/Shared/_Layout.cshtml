@@ -25,8 +25,13 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li><li class="nav-item">
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Admin" asp-controller="categories" asp-action="Index">Categroy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="SubCategory" asp-action="Index">SubCategory</a>
+                            @* Notice that   asp-controller="SubCategory" is named in tutorial SubCategories*@
                         </li>
                         <li class="nav-item">
     <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
