@@ -21,7 +21,7 @@ namespace FastFood.Web.Areas.Controllers
         {
            var  SubCategory = _context.SubCategories.Include(x => x.Category).ToList();
             return View(SubCategory);
-        }
+        } 
 
         [HttpGet]
         public IActionResult Create()
