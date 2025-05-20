@@ -20,34 +20,23 @@ namespace FastFood.Web.Areas.Admin.Controllers
             _context = context;
             this._webHostEnvironment = webHostEnvironment;
         }
-        //[HttpGet]
+        [HttpGet]
 
-        //public IActionResult Index()
-        //{
-        //    var items = _context.Items.Include(x => x.Category).Include(y => y.SubCategory)
-        //        .Select(model => new ItemViewModels()
-        //        {
-        //            Id = model.Id,
-        //            Title = model.Title,
-        //            Description = model.Description,
-        //            Price   = model.Price,
-        //            CategoryId = model.CategoryId,
-        //            SubCategoryId   = model.SubCategoryId,
-                    
-        //        }).ToList();
-        //    return View(items);
-        //}
+        public IActionResult Index()
+        {
+            var items = _context.Items.Include(x => x.Category).Include(y => y.SubCategory)
+                .Select(model => new ItemViewModels()
+                {
+                    Id = model.Id,
+                    Title = model.Title,
+                    Description = model.Description,
+                    Price   = model.Price,
+                    CategoryId = model.CategoryId,
+                    SubCategoryId   = model.SubCategoryId,
+                }).ToList();
 
-
-            [HttpGet]
-            public IActionResult Index()
-            {
-                var theitem = _context.Items.Include(x => x.Category).ToList();
-
-                return View(theitem);
-            }
-
-
+            return View(items);
+        }
         [HttpGet]
         public IActionResult Create()
         {
