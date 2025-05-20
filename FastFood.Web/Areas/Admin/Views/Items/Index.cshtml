@@ -25,10 +25,12 @@
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CategoryId)
+                @* @Html.DisplayNameFor(model => model.Category.Title) *@
+                Category
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SubCategoryId)
+                @* @Html.DisplayNameFor(model => model.SubCategory.Title) *@
+                Sub Category
             </th>
             <th></th>
         </tr>
@@ -49,10 +51,10 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CategoryId)
+                @Html.DisplayFor(modelItem => item.Category.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SubCategoryId)
+                @Html.DisplayFor(modelItem => item.SubCategory.Title)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |

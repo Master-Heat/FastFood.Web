@@ -12,12 +12,7 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            <input type="hidden" asp-for="Id" /> <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
@@ -34,12 +29,16 @@
             </div>
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
-                <input asp-for="CategoryId" class="form-control" />
+                <select asp-for="CategoryId" class="form-control" asp-items="@ViewBag.Category" id="CategoryId">
+                    
+                </select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="SubCategoryId" class="control-label"></label>
-                <input asp-for="SubCategoryId" class="form-control" />
+                <select asp-for="SubCategoryId" class="form-control" asp-items="@ViewBag.SubCategory" id="SubCategoryId">
+                   
+                </select>
                 <span asp-validation-for="SubCategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -54,5 +53,38 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+        <script>
+            $(document).ready(function () {
+                $('#CategoryId').change(function () {
+                    var categoryId = $(this).val();
+                    $('#SubCategoryId').empty(); // Clear existing subcategories
+                    $('#SubCategoryId').append($('<option value="">Select Sub Category</option>')); // Add default option
+
+                    if (categoryId) {
+                        $.ajax({
+                            url: '/Admin/Items/GetSubCategory', // Adjust URL if your area/controller is different
+                            type: 'GET',
+                            data: { CategoryId: categoryId },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data && data.length > 0) {
+                                    $.each(data, function (index, subCategory) {
+                                        $('#SubCategoryId').append($('<option>', {
+                                            value: subCategory.id,
+                                            text: subCategory.title
+                                        }));
+                                    });
+                                }
+                            },
+                            error: function (error) {
+                                console.log('Error loading subcategories:', error);
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
 }

@@ -12,5 +12,7 @@ namespace FastFood.Web.ViewModels
         public decimal Price { get; set; }
         public int CategoryId { get; set; }
         public int SubCategoryId { get; set; }
+        public SubCategory SubCategory { get; set; }
+        public Category Category { get; set; }
     }
 }

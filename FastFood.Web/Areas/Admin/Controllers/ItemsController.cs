@@ -33,6 +33,9 @@ namespace FastFood.Web.Areas.Admin.Controllers
                     Price   = model.Price,
                     CategoryId = model.CategoryId,
                     SubCategoryId   = model.SubCategoryId,
+                    Category = model.Category,
+                    SubCategory = model.SubCategory,
+
                 }).ToList();
 
             return View(items);
@@ -84,51 +87,98 @@ namespace FastFood.Web.Areas.Admin.Controllers
 
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
         {
-            ItemViewModels vm = new ItemViewModels();
-           var item = _context.Items.Where(x => x.Id == id).FirstOrDefault();
-            if(item != null)
+            if (id == null)
             {
-                vm.Id = item.Id;
-                vm.Title = item.Title;
-                vm.Description = item.Description;
-                vm.Price = item.Price;
-                //vm.ImageUrl = item.Image;
-
-
-                ViewBag.Category = new SelectList(_context.Categories, "Id", "Title", item.CategoryId);
-            ViewBag.SubCategory = new SelectList(_context.SubCategories, "Id", "Title", item.SubCategory);
+                return NotFound();
             }
-            
-            return View(vm);
 
+            var item = await _context.Items
+                .Include(i => i.Category) // Include Category for display in dropdown
+                .Include(i => i.SubCategory) // Include SubCategory for display in dropdown
+                .FirstOrDefaultAsync(i => i.Id == id);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new ItemViewModels
+            {
+                Id = item.Id,
+                Title = item.Title,
+                Description = item.Description,
+                Price = item.Price,
+                CategoryId = item.CategoryId,
+                SubCategoryId = item.SubCategoryId,
+                // If you want to pre-select by Title (less reliable if titles aren't unique):
+                // CategoryTitle = item.Category?.Title,
+                // SubCategoryTitle = item.SubCategory?.Title
+            };
+
+            ViewBag.Category = new SelectList(_context.Categories, "Id", "Title", item.CategoryId);
+            ViewBag.SubCategory = new SelectList(_context.SubCategories.Where(sc => sc.CategoryId == item.CategoryId), "Id", "Title", item.SubCategoryId);
+
+            return View(viewModel);
         }
-
-        //----------------------------------------
-
-       
 
         [HttpPost]
-        public IActionResult Edit(ItemViewModels vm)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, ItemViewModels vm)
         {
-            Item item = _context.Items.Where(x => x.Id == vm.Id).FirstOrDefault();
+            if (id != vm.Id)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
+                var itemToUpdate = await _context.Items.FindAsync(id);
 
-                item.Id = vm.Id;
-                item.Title = vm.Title;
-                item.Description = vm.Description;
-                item.Price = vm.Price;
-                item.CategoryId = vm.CategoryId;
-                item.SubCategoryId = vm.SubCategoryId;
-                _context.Items.Update(item);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
+                if (itemToUpdate == null)
+                {
+                    return NotFound();
+                }
+
+                itemToUpdate.Title = vm.Title;
+                itemToUpdate.Description = vm.Description;
+                itemToUpdate.Price = vm.Price;
+                itemToUpdate.CategoryId = vm.CategoryId;
+                itemToUpdate.SubCategoryId = vm.SubCategoryId;
+
+                // Handle image updates if needed (similar to Create)
+
+                try
+                {
+                    _context.Update(itemToUpdate);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ItemExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
             }
+
+            // If ModelState is invalid, repopulate ViewBag and return the view
+            ViewBag.Category = new SelectList(_context.Categories, "Id", "Title", vm.CategoryId);
+            ViewBag.SubCategory = new SelectList(_context.SubCategories.Where(sc => sc.CategoryId == vm.CategoryId), "Id", "Title", vm.SubCategoryId);
             return View(vm);
         }
 
+        private bool ItemExists(int id)
+        {
+            return _context.Items.Any(e => e.Id == id);
+        }
         //----------------------------------------
 
     }

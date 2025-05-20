@@ -64,35 +64,35 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-        <script>
-            $(document).ready(function () {
-                $('#CategoryId').change(function () {
-                    var categoryId = $(this).val();
-                    $('#SubCategoryId').empty(); // Clear existing subcategories
-                    $('#SubCategoryId').append($('<option value="">Select Sub Category</option>')); // Add default option
+            <script>
+                $(document).ready(function () {
+                    $('#CategoryId').change(function () {
+                        var categoryId = $(this).val();
+                        $('#SubCategoryId').empty(); // Clear existing subcategories
+                        $('#SubCategoryId').append($('<option value="">Select Sub Category</option>')); // Add default option
 
-                    if (categoryId) {
-                        $.ajax({
-                            url: '/Admin/Items/GetSubCategory', // Adjust URL if your area/controller is different
-                            type: 'GET',
-                            data: { CategoryId: categoryId },
-                            dataType: 'json',
-                            success: function (data) {
-                                if (data && data.length > 0) { // Check if data is an array and not empty
-                                    $.each(data, function (index, subCategory) {
-                                        $('#SubCategoryId').append($('<option>', {
-                                            value: subCategory.id,
-                                            text: subCategory.title
-                                        }));
-                                    });
+                        if (categoryId) {
+                            $.ajax({
+                                url: '/Admin/Items/GetSubCategory', // Adjust URL if your area/controller is different
+                                type: 'GET',
+                                data: { CategoryId: categoryId },
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data && data.length > 0) { // Check if data is an array and not empty
+                                        $.each(data, function (index, subCategory) {
+                                            $('#SubCategoryId').append($('<option>', {
+                                                value: subCategory.id,
+                                                text: subCategory.title
+                                            }));
+                                        });
+                                    }
+                                },
+                                error: function (error) {
+                                    console.log('Error loading subcategories:', error);
                                 }
-                            },
-                            error: function (error) {
-                                console.log('Error loading subcategories:', error);
-                            }
-                        });
-                    }
+                            });
+                        }
+                    });
                 });
-            });
-        </script>
+            </script>
 }
